@@ -1,0 +1,7 @@
+{
+    "Lua": {
+        "workspace.checkThirdParty": false,
+        "format.enable": false
+    },
+    "workspace.checkThirdParty": false
+}
