@@ -33,7 +33,7 @@ function M.setup(_)
         },
         {
             "VonHeikemen/lsp-zero.nvim",
-            branch = "v2.x",
+            branch = "v3.x",
             dependencies = {
                 -- ordering
                 "folke/neodev.nvim",
@@ -42,6 +42,11 @@ function M.setup(_)
                 "neovim/nvim-lspconfig", -- Req
                 "williamboman/mason.nvim", -- Opt
                 "williamboman/mason-lspconfig.nvim", -- Opt
+                -- Omnisharp
+                {
+                    "Hoffs/omnisharp-extended-lsp.nvim", -- Opt
+                    lazy = true,
+                },
 
                 -- Autocompletion
                 "hrsh7th/nvim-cmp", -- Req
@@ -56,6 +61,18 @@ function M.setup(_)
                 "rafamadriz/friendly-snippets", -- Opt
             },
             config = function()
+                require("mason").setup {}
+                require("mason-lspconfig").setup {
+                    ensure_installed = {
+                        "pyright",
+                        "clangd",
+                        "tsserver",
+                        "rust_analyzer",
+                        "lua_ls",
+                        "bashls",
+                    },
+                }
+
                 local lspz = require("lsp-zero").preset "recommended"
                 lspz.on_attach(function(client, bufnr)
                     local formatter_config = require "formatter.config"
@@ -64,19 +81,34 @@ function M.setup(_)
                     if #star_formatters == #buf_formatters then
                         lspz.async_autoformat(client, bufnr)
                     end
+
+                    lspz.default_keymaps { bufnr = bufnr }
                 end)
 
                 local cmp = require "cmp"
-                lspz.setup_nvim_cmp {
+                cmp.setup {
+                    sources = {
+                        { name = "path" },
+                        { name = "nvim_lsp" },
+                        { name = "luasnip" },
+                        { name = "nvim_lua" },
+                        { name = "buffer" },
+                    },
                     select_behavior = "insert",
-                    mapping = keymap.cmp_mapping(lspz, cmp),
+                    mapping = cmp.mapping.preset.insert(keymap.cmp_mapping(lspz, cmp)),
                 }
+                -- lspz.setup_nvim_cmp {
+                --     select_behavior = "insert",
+                --     mapping = keymap.cmp_mapping(lspz, cmp),
+                -- }
 
                 require("luasnip.loaders.from_vscode").lazy_load()
+                require("luasnip").filetype_extend("htmldjango", { "html" })
 
                 local lspc = require "lspconfig"
 
                 lspc.bashls.setup {}
+                lspc.cssls.setup {}
                 lspc.clangd.setup {}
                 lspc.gdscript.setup {}
                 lspc.gopls.setup {}
@@ -93,9 +125,20 @@ function M.setup(_)
                 lspc.omnisharp.setup {
                     cmd = { "OmniSharp" },
                     organize_imports_on_format = true,
+                    handlers = {
+                        ["textDocument/definition"] = require("omnisharp_extended").handler,
+                    },
                 }
                 lspc.pyright.setup {}
-                lspc.rust_analyzer.setup {}
+                lspc.rust_analyzer.setup {
+                    -- settings = {
+                    --     ["rust-analyzer"] = {
+                    --         cargo = {
+                    --             features = "all",
+                    --         },
+                    --     },
+                    -- },
+                }
                 lspc.taplo.setup {}
                 lspc.texlab.setup {}
                 lspc.tsserver.setup {}
@@ -113,7 +156,6 @@ function M.setup(_)
                 }
                 lspc.zls.setup {}
 
-                lspz.ensure_installed { "lua_ls", "clangd", "pyright", "rust_analyzer" }
                 lspz.setup()
             end,
         },
@@ -142,6 +184,7 @@ function M.setup(_)
                         javascriptreact = { prettier },
                         typescriptreact = { prettier },
                         html = { prettier },
+                        cs = { require("formatter.filetypes.cs").clangformat },
                         css = { prettier },
                         json = { prettier },
                         yaml = { prettier },

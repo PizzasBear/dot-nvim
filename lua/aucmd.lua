@@ -11,6 +11,13 @@ local function detect_files()
     })
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
         group = group,
+        pattern = { ".djlintrc" },
+        callback = function(ev)
+            vim.bo[ev.buf].filetype = "json"
+        end,
+    })
+    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+        group = group,
         pattern = { ".prettierignore" },
         callback = function(ev)
             vim.bo[ev.buf].filetype = "gitignore"
