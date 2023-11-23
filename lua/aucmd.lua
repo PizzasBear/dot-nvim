@@ -51,6 +51,13 @@ local function detect_files()
             vim.bo[ev.buf].filetype = "gdscript"
         end,
     })
+    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+        group = group,
+        pattern = { "*.html.j2" },
+        callback = function(ev)
+            vim.bo[ev.buf].filetype = "htmldjango"
+        end,
+    })
     vim.api.nvim_create_autocmd("FileType", {
         group = group,
         callback = function(ev)

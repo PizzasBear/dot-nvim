@@ -189,16 +189,17 @@ function M.setup(_)
                         json = { prettier },
                         yaml = { prettier },
                         htmldjango = {
-                            function()
-                                return {
-                                    exe = "djlint",
-                                    args = {
-                                        "-",
-                                        "--reformat",
-                                    },
-                                    stdin = true,
-                                }
-                            end,
+                            prettier,
+                            -- function()
+                            --     return {
+                            --         exe = "djlint",
+                            --         args = {
+                            --             "-",
+                            --             "--reformat",
+                            --         },
+                            --         stdin = true,
+                            --     }
+                            -- end,
                         },
                         markdown = {
                             prettier,
