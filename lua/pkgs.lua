@@ -142,6 +142,17 @@ function M.setup(_)
                 lspc.taplo.setup {}
                 lspc.texlab.setup {}
                 lspc.tsserver.setup {}
+                lspc.unocss.setup {
+                    filetypes = {
+                        "html",
+                        "htmldjango",
+                        "javascriptreact",
+                        "rescript",
+                        "typescriptreact",
+                        "vue",
+                        "svelte",
+                    },
+                }
                 lspc.vimls.setup {}
                 lspc.yamlls.setup {
                     settings = {
@@ -344,6 +355,32 @@ function M.setup(_)
             opts = {},
         },
         {
+            "chrisgrieser/nvim-spider",
+            enabled = false,
+            keys = {
+                {
+                    "w",
+                    "<cmd>lua require('spider').motion('w')<CR>",
+                    mode = { "n", "o", "x" },
+                },
+                {
+                    "e",
+                    "<cmd>lua require('spider').motion('e')<CR>",
+                    mode = { "n", "o", "x" },
+                },
+                {
+                    "b",
+                    "<cmd>lua require('spider').motion('b')<CR>",
+                    mode = { "n", "o", "x" },
+                },
+                {
+                    "ge",
+                    "<cmd>lua require('spider').motion('ge')<CR>",
+                    mode = { "n", "o", "x" },
+                },
+            },
+        },
+        {
             "nvim-lualine/lualine.nvim",
             dependencies = "nvim-tree/nvim-web-devicons",
             opts = {
@@ -385,6 +422,15 @@ function M.setup(_)
             config = function(_, opts)
                 require("bufferline").setup(opts)
             end,
+        },
+        {
+            "lewis6991/gitsigns.nvim",
+            opts = {},
+        },
+        {
+            "folke/todo-comments.nvim",
+            dependencies = { "nvim-lua/plenary.nvim" },
+            opts = {},
         },
         {
             "folke/tokyonight.nvim",
