@@ -72,10 +72,16 @@ end
 
 local function format_on_save()
     local group = vim.api.nvim_create_augroup("FormatOnSave", {})
-    vim.api.nvim_create_autocmd("BufWritePost", {
+    -- vim.api.nvim_create_autocmd("BufWritePost", {
+    --     group = group,
+    --     callback = function()
+    --         vim.cmd.FormatWrite()
+    --     end,
+    -- })
+    vim.api.nvim_create_autocmd("BufWritePre", {
         group = group,
         callback = function()
-            vim.cmd.FormatWrite()
+            vim.lsp.buf.format();
         end,
     })
 end

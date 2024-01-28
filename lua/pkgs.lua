@@ -73,16 +73,17 @@ function M.setup(_)
                     },
                 }
 
-                local lspz = require("lsp-zero").preset "recommended"
-                lspz.on_attach(function(client, bufnr)
-                    local formatter_config = require "formatter.config"
-                    local star_formatters = formatter_config.formatters_for_filetype()
-                    local buf_formatters = formatter_config.formatters_for_filetype(vim.bo[bufnr].filetype)
-                    if #star_formatters == #buf_formatters then
-                        lspz.async_autoformat(client, bufnr)
-                    end
+                local lspz = require "lsp-zero"
+                lspz.on_attach(function(_, bufnr)
+                    -- local formatter_config = require "formatter.config"
+                    -- local star_formatters = formatter_config.formatters_for_filetype()
+                    -- local buf_formatters = formatter_config.formatters_for_filetype(vim.bo[bufnr].filetype)
+                    -- if #star_formatters == #buf_formatters then
+                    --     lspz.async_autoformat(client, bufnr)
+                    -- end
 
                     lspz.default_keymaps { bufnr = bufnr }
+                    -- lspz.buffer_autoformat(client, bufnr)
                 end)
 
                 local cmp = require "cmp"
@@ -140,6 +141,7 @@ function M.setup(_)
                     -- },
                 }
                 lspc.taplo.setup {}
+                lspc.templ.setup {}
                 lspc.texlab.setup {}
                 lspc.tsserver.setup {}
                 lspc.unocss.setup {
@@ -180,54 +182,82 @@ function M.setup(_)
             end,
         },
         {
-            "mhartington/formatter.nvim",
+            "nvimtools/none-ls.nvim",
+            dependencies = { "nvim-lua/plenary.nvim" },
             opts = function()
-                local python = require "formatter.filetypes.python"
-                local prettier = require "formatter.defaults.prettier"
+                local null_ls = require "null-ls"
+                local helpers = require "null-ls.helpers"
                 return {
-                    filetype = {
-                        lua = { require("formatter.filetypes.lua").stylua },
-                        python = { python.isort, python.black },
-                        sh = { require("formatter.filetypes.sh").shfmt },
-                        sql = { require("formatter.filetypes.sql").pgformat },
-                        javascript = { prettier },
-                        typescript = { prettier },
-                        javascriptreact = { prettier },
-                        typescriptreact = { prettier },
-                        html = { prettier },
-                        cs = { require("formatter.filetypes.cs").clangformat },
-                        css = { prettier },
-                        json = { prettier },
-                        yaml = { prettier },
-                        htmldjango = {
-                            prettier,
-                            -- function()
-                            --     return {
-                            --         exe = "djlint",
-                            --         args = {
-                            --             "-",
-                            --             "--reformat",
-                            --         },
-                            --         stdin = true,
-                            --     }
-                            -- end,
-                        },
-                        markdown = {
-                            prettier,
-                            --function()
-                            --    return {
-                            --        exe = "markdownlint",
-                            --        args = {
-                            --            "-s",
-                            --        },
-                            --        stdin = true,
-                            --    }
-                            --end,
+                    sources = {
+                        null_ls.builtins.formatting.stylua,
+                        null_ls.builtins.formatting.black,
+                        null_ls.builtins.formatting.isort,
+                        null_ls.builtins.formatting.shfmt,
+                        null_ls.builtins.formatting.prettier,
+                        null_ls.builtins.formatting.clang_format,
+                        {
+                            name = "templrfmt",
+                            filetypes = { "rust" },
+                            method = null_ls.methods.FORMATTING,
+                            generator = helpers.formatter_factory {
+                                command = "templrfmt",
+                                args = { "--stdin" },
+                                to_stdin = true,
+                            },
                         },
                     },
                 }
             end,
         },
+        -- {
+        --     "mhartington/formatter.nvim",
+        --     opts = function()
+        --         local python = require "formatter.filetypes.python"
+        --         local prettier = require "formatter.defaults.prettier"
+        --         return {
+        --             filetype = {
+        --                 lua = { require("formatter.filetypes.lua").stylua },
+        --                 python = { python.isort, python.black },
+        --                 sh = { require("formatter.filetypes.sh").shfmt },
+        --                 sql = { require("formatter.filetypes.sql").pgformat },
+        --                 javascript = { prettier },
+        --                 typescript = { prettier },
+        --                 javascriptreact = { prettier },
+        --                 typescriptreact = { prettier },
+        --                 html = { prettier },
+        --                 cs = { require("formatter.filetypes.cs").clangformat },
+        --                 css = { prettier },
+        --                 json = { prettier },
+        --                 yaml = { prettier },
+        --                 htmldjango = {
+        --                     prettier,
+        --                     -- function()
+        --                     --     return {
+        --                     --         exe = "djlint",
+        --                     --         args = {
+        --                     --             "-",
+        --                     --             "--reformat",
+        --                     --         },
+        --                     --         stdin = true,
+        --                     --     }
+        --                     -- end,
+        --                 },
+        --                 markdown = {
+        --                     prettier,
+        --                     --function()
+        --                     --    return {
+        --                     --        exe = "markdownlint",
+        --                     --        args = {
+        --                     --            "-s",
+        --                     --        },
+        --                     --        stdin = true,
+        --                     --    }
+        --                     --end,
+        --                 },
+        --             },
+        --         }
+        --     end,
+        -- },
         -- {
         --     "mfussenegger/nvim-dap",
         --     config = function()
@@ -353,6 +383,14 @@ function M.setup(_)
             version = "*", -- Use for stability; omit to use `main` branch for the latest features
             event = "VeryLazy",
             opts = {},
+        },
+        {
+            "ggandor/leap.nvim",
+            dependencies = { "tpope/vim-repeat" },
+            config = function()
+                local leap = require "leap"
+                leap.add_default_mappings()
+            end,
         },
         {
             "chrisgrieser/nvim-spider",
