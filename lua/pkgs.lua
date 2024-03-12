@@ -132,13 +132,14 @@ function M.setup(_)
                 }
                 lspc.pyright.setup {}
                 lspc.rust_analyzer.setup {
-                    -- settings = {
-                    --     ["rust-analyzer"] = {
-                    --         cargo = {
-                    --             features = "all",
-                    --         },
-                    --     },
-                    -- },
+                    settings = {
+                        ["rust-analyzer"] = {
+                            diagnostics = { disabled = { "remove-unnecessary-else" } },
+                            -- cargo = {
+                            --     features = "all",
+                            -- },
+                        },
+                    },
                 }
                 lspc.taplo.setup {}
                 lspc.templ.setup {}
@@ -153,6 +154,7 @@ function M.setup(_)
                         "typescriptreact",
                         "vue",
                         "svelte",
+                        "rust",
                     },
                 }
                 lspc.vimls.setup {}
@@ -188,6 +190,9 @@ function M.setup(_)
                 local null_ls = require "null-ls"
                 local helpers = require "null-ls.helpers"
                 return {
+                    -- on_init = function(client, _)
+                    --     client.offset_encoding = "utf-8"
+                    -- end,
                     sources = {
                         null_ls.builtins.formatting.stylua,
                         null_ls.builtins.formatting.black,
@@ -354,7 +359,18 @@ function M.setup(_)
             dependencies = { "nvim-lua/plenary.nvim" },
             opts = {
                 defaults = {
-                    file_ignore_patterns = { "target", "node_modules", "%.git", "build" },
+                    vimgrep_arguments = {
+                        "rg",
+                        "--color=never",
+                        "--no-heading",
+                        "--with-filename",
+                        "--line-number",
+                        "--column",
+                        "--smart-case",
+                        "--hidden",
+                        "-g!.git/",
+                    },
+                    -- file_ignore_patterns = { "target", "node_modules", "%.git", "build" },
                 },
             },
             config = function(_, opts)
@@ -466,6 +482,15 @@ function M.setup(_)
             opts = {},
         },
         {
+            "NeogitOrg/neogit",
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+                "sindrets/diffview.nvim",
+                "nvim-telescope/telescope.nvim",
+            },
+            opts = {},
+        },
+        {
             "folke/todo-comments.nvim",
             dependencies = { "nvim-lua/plenary.nvim" },
             opts = {},
@@ -479,6 +504,21 @@ function M.setup(_)
             "rebelot/kanagawa.nvim",
             lazy = true,
             opts = {},
+        },
+
+        {
+            "zbirenbaum/copilot.lua",
+            dependencies = {
+                "hrsh7th/nvim-cmp",
+            },
+            cmd = "Copilot",
+            build = ":Copilot auth",
+            event = "InsertEnter",
+            opts = {
+                suggestion = {
+                    auto_trigger = true,
+                },
+            },
         },
     }, {
         install = {
