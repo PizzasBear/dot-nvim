@@ -48,8 +48,8 @@ function M.setup_nvim_tree(_)
     vim.keymap.set("n", "<leader>tc", api.tree.collapse_all)
 end
 
-function M.cmp_mapping(lspz, cmp, _)
-    return lspz.defaults.cmp_mappings {
+function M.cmp_mapping(cmp)
+    return {
         ["<cr>"] = cmp.mapping.confirm { select = true },
     }
 end

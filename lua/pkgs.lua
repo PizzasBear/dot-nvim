@@ -33,7 +33,7 @@ function M.setup(_)
         },
         {
             "VonHeikemen/lsp-zero.nvim",
-            branch = "v3.x",
+            branch = "v4.x",
             dependencies = {
                 -- ordering
                 "folke/neodev.nvim",
@@ -96,7 +96,7 @@ function M.setup(_)
                         { name = "buffer" },
                     },
                     select_behavior = "insert",
-                    mapping = cmp.mapping.preset.insert(keymap.cmp_mapping(lspz, cmp)),
+                    mapping = cmp.mapping.preset.insert(keymap.cmp_mapping(cmp)),
                 }
                 -- lspz.setup_nvim_cmp {
                 --     select_behavior = "insert",
