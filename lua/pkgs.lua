@@ -66,7 +66,7 @@ function M.setup(_)
                     ensure_installed = {
                         "pyright",
                         "clangd",
-                        "tsserver",
+                        "ts_ls",
                         "rust_analyzer",
                         "lua_ls",
                         "bashls",
@@ -144,7 +144,7 @@ function M.setup(_)
                 lspc.taplo.setup {}
                 lspc.templ.setup {}
                 lspc.texlab.setup {}
-                lspc.tsserver.setup {}
+                lspc.ts_ls.setup {}
                 lspc.unocss.setup {
                     filetypes = {
                         "html",
@@ -158,6 +158,7 @@ function M.setup(_)
                     },
                 }
                 lspc.vimls.setup {}
+                lspc.wgsl_analyzer.setup {}
                 lspc.yamlls.setup {
                     settings = {
                         yaml = {
@@ -188,6 +189,7 @@ function M.setup(_)
             dependencies = { "nvim-lua/plenary.nvim" },
             opts = function()
                 local null_ls = require "null-ls"
+                local utils = require "null-ls.utils"
                 local helpers = require "null-ls.helpers"
                 return {
                     -- on_init = function(client, _)
@@ -195,10 +197,45 @@ function M.setup(_)
                     -- end,
                     sources = {
                         null_ls.builtins.formatting.stylua,
-                        null_ls.builtins.formatting.black,
+                        {
+                            name = "ruff",
+                            meta = {
+                                url = "https://github.com/astral-sh/ruff",
+                                description = "An extremely fast Python linter and code formatter, written in Rust.",
+                            },
+                            method = { null_ls.methods.FORMATTING, null_ls.methods.RANGE_FORMATTING },
+                            filetypes = { "python" },
+                            generator = helpers.formatter_factory {
+                                command = "ruff",
+                                args = function(params)
+                                    if params.method == null_ls.methods.FORMATTING then
+                                        return {
+                                            "format",
+                                            "--quiet",
+                                            "--stdin-filename",
+                                            "$FILENAME",
+                                        }
+                                    end
+
+                                    return {
+                                        "format",
+                                        "--quiet",
+                                        "--range=" .. params.range.row .. "-" .. params.range.end_row,
+                                        "--stdin-filename",
+                                        "$FILENAME",
+                                    }
+                                end,
+                                to_stdin = true,
+                                cwd = helpers.cache.by_bufnr(function(params)
+                                    return (utils.root_pattern "pyproject.toml")(params.bufname)
+                                end),
+                            },
+                        },
                         null_ls.builtins.formatting.isort,
                         null_ls.builtins.formatting.shfmt,
-                        null_ls.builtins.formatting.prettier,
+                        null_ls.builtins.formatting.prettier.with {
+                            extra_filetypes = { "xml" },
+                        },
                         null_ls.builtins.formatting.clang_format,
                         {
                             name = "templrfmt",
@@ -505,9 +542,9 @@ function M.setup(_)
             lazy = true,
             opts = {},
         },
-
         {
             "zbirenbaum/copilot.lua",
+            enabled = false,
             dependencies = {
                 "hrsh7th/nvim-cmp",
             },

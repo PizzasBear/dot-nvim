@@ -39,7 +39,7 @@ function M.setup(_)
     vim.o.breakindentopt = "shift:4,min:40,sbr"
     vim.opt.showbreak = ">>"
 
-    -- Assembly
+    -- Syntax options
     vim.g.asmsyntax = "nasm"
     vim.g.tex_flavor = "latex"
 

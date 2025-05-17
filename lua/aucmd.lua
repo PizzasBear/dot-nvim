@@ -46,6 +46,13 @@ local function detect_files()
     })
     vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
         group = group,
+        pattern = { "*.v" },
+        callback = function(ev)
+            vim.bo[ev.buf].filetype = "verilog"
+        end,
+    })
+    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+        group = group,
         pattern = { "*.gd" },
         callback = function(ev)
             vim.bo[ev.buf].filetype = "gdscript"
@@ -81,7 +88,7 @@ local function format_on_save()
     vim.api.nvim_create_autocmd("BufWritePre", {
         group = group,
         callback = function()
-            vim.lsp.buf.format();
+            vim.lsp.buf.format()
         end,
     })
 end

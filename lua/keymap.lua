@@ -78,7 +78,7 @@ function M.setup_toggleterm(_)
 end
 
 function M.setup_trouble(_)
-    vim.keymap.set("n", "<leader>oe", vim.cmd.TroubleToggle)
+    vim.keymap.set("n", "<leader>oe", [[<cmd>Trouble diagnostics toggle<cr>]])
 end
 
 -- local function buffer_lsp_setup(opts)
