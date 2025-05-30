@@ -77,25 +77,30 @@ local function detect_files()
     })
 end
 
-local function format_on_save()
-    local group = vim.api.nvim_create_augroup("FormatOnSave", {})
-    -- vim.api.nvim_create_autocmd("BufWritePost", {
-    --     group = group,
-    --     callback = function()
-    --         vim.cmd.FormatWrite()
-    --     end,
-    -- })
-    vim.api.nvim_create_autocmd("BufWritePre", {
-        group = group,
-        callback = function()
-            vim.lsp.buf.format()
-        end,
-    })
-end
-
 function M.setup(_)
     detect_files()
-    format_on_save()
+
+    vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function(ev)
+            local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            if client and client:supports_method "textDocument/completion" then
+                vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+            end
+        end,
+    })
+
+    local group = vim.api.nvim_create_augroup("FormatOnSave", {})
+    vim.api.nvim_create_autocmd("BufWritePre", {
+        group = group,
+        callback = function(args)
+            local status, conform = pcall(require, "conform")
+            if status then
+                conform.format { bufnr = args.buf }
+            else
+                vim.lsp.buf.format { bufnr = args.buf }
+            end
+        end,
+    })
 end
 
 return M

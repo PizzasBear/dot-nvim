@@ -1,7 +1,5 @@
 local M = {}
 
-M.colorscheme = "kanagawa"
-
 function M.setup(_)
     vim.opt.tabstop = 4
     vim.opt.softtabstop = 4
@@ -13,7 +11,7 @@ function M.setup(_)
     vim.opt.list = true
     vim.opt.listchars = { tab = "» ", extends = ">", precedes = "<", nbsp = "·", trail = "·" }
     vim.opt.autoindent = true
-    vim.opt.timeoutlen = 250 -- http://stackoverflow.com/questions/2158516/delay-before-o-opens-a-new-line
+    vim.opt.timeoutlen = 250
     vim.opt.encoding = "utf-8"
     vim.opt.scrolloff = 2
     vim.opt.showmode = true
@@ -47,8 +45,10 @@ function M.setup(_)
     vim.opt.undodir = vim.fs.normalize "~/.vimdid"
     vim.opt.undofile = true
 
-    -- Don"t pass messages to |ins-completion-menu|.
+    -- Don't pass messages to |ins-completion-menu|.
     vim.opt.shortmess = vim.o.shortmess .. "c"
+
+    vim.opt.completeopt = "fuzzy,menuone,noselect,popup"
 
     -- Colors and syntax highlighting
     vim.opt.termguicolors = true
@@ -57,14 +57,19 @@ function M.setup(_)
     vim.cmd "filetype plugin indent on"
 
     vim.opt.exrc = true
+
     -- -- Disable NetRW builtin file browser
     -- vim.g.loaded_netrw = 1
     -- vim.g.loaded_netrwPlugin = 1
-end
 
-function M.lazy_setup(_)
-    -- vim.cmd.colorscheme "tokyonight-night"
-    vim.cmd.colorscheme(M.colorscheme)
+    vim.diagnostic.config {
+        virtual_lines = {
+            -- Only show virtual line diagnostics for the current cursor line
+            current_line = true,
+        },
+    }
+
+    vim.cmd.colorscheme "tokyonight-night"
 end
 
 return M
