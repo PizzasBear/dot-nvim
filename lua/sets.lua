@@ -25,10 +25,10 @@ function M.setup(_)
     -- HEBREW
     vim.opt.allowrevins = true
 
-    -- -- Folding
-    -- vim.opt.foldmethod = "expr"
-    -- vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- function() require("nvim-treesitter.fold").get_fold_indic(vim.v.lnum) end
-    -- vim.opt.foldenable = false
+    -- Folding
+    vim.opt.foldmethod = "expr"
+    vim.opt.foldexpr = "lua:vim.treesitter.foldexpr"
+    vim.opt.foldenable = false
 
     -- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
     vim.opt.wrap = true
