@@ -65,20 +65,26 @@ local function detect_files()
             vim.bo[ev.buf].filetype = "htmldjango"
         end,
     })
-    vim.api.nvim_create_autocmd("FileType", {
-        group = group,
-        callback = function(ev)
-            if vim.bo[ev.buf].filetype == "htmldjango" then
-                require("luasnip.loaders.from_vscode").load {
-                    include = { "html" },
-                }
-            end
-        end,
-    })
+    -- vim.api.nvim_create_autocmd("FileType", {
+    --     group = group,
+    --     callback = function(ev)
+    --         if vim.bo[ev.buf].filetype == "htmldjango" then
+    --             require("luasnip.loaders.from_vscode").load {
+    --                 include = { "html" },
+    --             }
+    --         end
+    --     end,
+    -- })
 end
 
 function M.setup(_)
     detect_files()
+
+    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+        callback = function(ev)
+            pcall(vim.treesitter.start, ev.buf)
+        end,
+    })
 
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(ev)
@@ -92,12 +98,12 @@ function M.setup(_)
     local group = vim.api.nvim_create_augroup("FormatOnSave", {})
     vim.api.nvim_create_autocmd("BufWritePre", {
         group = group,
-        callback = function(args)
+        callback = function(ev)
             local status, conform = pcall(require, "conform")
             if status then
-                conform.format { bufnr = args.buf }
+                conform.format { bufnr = ev.buf }
             else
-                vim.lsp.buf.format { bufnr = args.buf }
+                vim.lsp.buf.format { bufnr = ev.buf }
             end
         end,
     })
