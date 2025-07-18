@@ -1,5 +1,5 @@
 return {
-    "nvim-lspconfig",
+    "neovim/nvim-lspconfig",
     config = function()
         vim.lsp.enable "bashls"
         vim.lsp.enable "cssls"
