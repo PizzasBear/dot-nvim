@@ -95,6 +95,17 @@ function M.setup(_)
         end,
     })
 
+    vim.api.nvim_create_autocmd("InsertCharPre", {
+        callback = function()
+            if vim.fn.pumvisible() ~= 0 or vim.fn.state "m" == "m" then
+                return
+            end
+            if vim.v.char:match "^[_%a]$" then
+                vim.lsp.completion.get()
+            end
+        end,
+    })
+
     local group = vim.api.nvim_create_augroup("FormatOnSave", {})
     vim.api.nvim_create_autocmd("BufWritePre", {
         group = group,

@@ -25,9 +25,32 @@ function M.setup(_)
     vim.keymap.set("n", "<leader>w", "<c-w>", { remap = true })
 
     vim.keymap.set("i", "<C-Space>", "<C-x><C-o>")
-    vim.keymap.set("i", "<CR>", function()
-        return vim.fn.pumvisible() ~= 0 and "<C-y>" or "<CR>"
+    vim.keymap.set("i", "<C-n>", function()
+        return vim.fn.pumvisible() ~= 0 and "<C-n>" or "<C-x><C-o>"
     end, { expr = true })
+    vim.keymap.set("i", "<Tab>", function()
+        return vim.fn.pumvisible() ~= 0 and "<C-n>" or "<Tab>"
+    end, { expr = true })
+    vim.keymap.set("i", "<S-Tab>", function()
+        return vim.fn.pumvisible() ~= 0 and "<C-p>" or "<S-Tab>"
+    end, { expr = true })
+    vim.keymap.set("i", "<CR>", function()
+        local has_npairs, npairs = pcall(require, "nvim-autopairs")
+
+        local cr = has_npairs and npairs.autopairs_cr or function()
+            return vim.keycode "<CR>"
+        end
+
+        if vim.fn.pumvisible() ~= 0 then
+            if vim.fn.complete_info({ "selected" }).selected ~= -1 then
+                return vim.keycode "<C-y>"
+            else
+                return vim.keycode "<C-e>" .. cr()
+            end
+        else
+            return cr()
+        end
+    end, { expr = true, replace_keycodes = false })
 
     vim.keymap.set("n", "gd", "")
 end
@@ -36,7 +59,7 @@ end
 M.telescope = {
     { mode = { "n" }, "<leader><leader>", function() require("telescope.builtin").find_files() end, desc = "Telescope find files" },
     { mode = { "n" }, "<leader>fg",       function() require("telescope.builtin").live_grep() end, desc = "Telescope live grep" },
-    -- { mode = { "n" }, "gd",               function() require("telescope.builtin").lsp_definitions() end, {} },
+    -- { mode = { "n" }, "gd",               function() require("telescope.builtin").lsp_definitions() end },
     { mode = { "n" }, "gO",               function() require("telescope.builtin").lsp_document_symbols() end },
     { mode = { "n" }, "grr",              function() require("telescope.builtin").lsp_references() end },
     { mode = { "n" }, "<C-g>",            function() require("telescope.builtin").buffers() end },
@@ -50,6 +73,11 @@ M.flash = {
     { mode = { "o" },           "r",     function() require("flash").remote() end, desc = "Remote Flash" },
     { mode = { "o", "x" },      "R",     function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
     { mode = { "c" },           "<c-s>", function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+}
+
+-- stylua: ignore
+M.trouble = {
+    { mode = { "n" }, "<leader>oe", function() require("trouble").toggle("diagnostics") end, desc = "Diagnostics (Trouble)" },
 }
 
 return M
