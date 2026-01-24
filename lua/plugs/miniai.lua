@@ -1,5 +1,7 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
-    "echasnovski/mini.ai",
+    "nvim-mini/mini.ai",
     version = "*",
     event = "VeryLazy",
     opts = function()

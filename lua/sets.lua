@@ -48,7 +48,13 @@ function M.setup(_)
     -- Don't pass messages to |ins-completion-menu|.
     vim.opt.shortmess = vim.o.shortmess .. "c"
 
-    vim.opt.completeopt = "fuzzy,menuone,noselect,popup"
+    if vim.version.range(">=0.11"):has(vim.version()) then
+        vim.opt.completeopt = "fuzzy,menuone,noselect,popup"
+    elseif vim.version.range(">=0.10"):has(vim.version()) then
+        vim.opt.completeopt = "menuone,noselect,popup"
+    else
+        vim.opt.completeopt = "menuone,noselect"
+    end
 
     -- Colors and syntax highlighting
     vim.opt.termguicolors = true
@@ -68,6 +74,9 @@ function M.setup(_)
             current_line = true,
         },
     }
+
+    -- Enable my autoformat aucmd
+    vim.g.auto_format = true
 
     vim.cmd.colorscheme "tokyonight-night"
 end

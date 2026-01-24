@@ -1,5 +1,10 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
-    "echasnovski/mini.surround",
+    "nvim-mini/mini.surround",
     version = "*",
-    opts = {},
+    opts = {
+        -- Number of lines within which surrounding is searched
+        n_lines = 300,
+    },
 }

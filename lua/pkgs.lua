@@ -21,11 +21,16 @@ end
 function M.setup(_)
     install_lazy()
     require("lazy").setup {
+        ---@module "lazy"
+        ---@type LazyPluginSpec[]
         spec = {
             { import = "plugs" },
             {
                 "folke/lazydev.nvim",
                 ft = "lua", -- only load on lua files
+
+                enabled = vim.version.range(">=0.10"):has(vim.version()),
+
                 opts = {
                     library = {
                         -- See the configuration section for more details

@@ -1,3 +1,5 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
     "nvimtools/none-ls.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -8,6 +10,7 @@ return {
         local null_ls = require "null-ls"
         local utils = require "null-ls.utils"
         local helpers = require "null-ls.helpers"
+
         return {
             -- on_init = function(client, _)
             --     client.offset_encoding = "utf-8"

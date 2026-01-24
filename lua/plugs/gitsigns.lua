@@ -1,4 +1,8 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
     "lewis6991/gitsigns.nvim",
-    opt = {},
+    opts = {
+        current_line_blame = true,
+    },
 }

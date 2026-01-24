@@ -1,8 +1,15 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
     "stevearc/conform.nvim",
     dependencies = { "mason.nvim" },
     lazy = true,
     cmd = "ConformInfo",
+
+    enabled = vim.version.range(">=0.10"):has(vim.version()),
+
+    ---@module "conform"
+    ---@type conform.setupOpts
     opts = {
         default_format_opts = {
             timeout_ms = 3000,
@@ -10,11 +17,22 @@ return {
             quiet = false, -- not recommended to change
             lsp_format = "fallback", -- not recommended to change
         },
+        formatters = {
+            ["aosp-java-format"] = {
+                meta = {
+                    url = "https://github.com/google/google-java-format",
+                    description = "Reformats Java source code according to Google Java Style.",
+                },
+                command = "google-java-format",
+                args = { "--aosp", "-" },
+            },
+        },
         formatters_by_ft = {
             lua = { "stylua" },
             luau = { "stylua" },
             fish = { "fish_indent" },
             python = { "ruff_organize_imports", "ruff_format" },
+            java = { "clang-format" },
 
             sh = { "shfmt" },
             bash = { "shfmt" },

@@ -1,5 +1,10 @@
+---@module "lazy"
+---@type LazyPluginSpec
 return {
     "neovim/nvim-lspconfig",
+
+    enabled = vim.version.range(">=0.11"):has(vim.version()),
+
     config = function()
         vim.lsp.enable "bashls"
         vim.lsp.enable "cssls"
@@ -10,6 +15,7 @@ return {
             filetypes = { "html", "htmldjango" },
         })
         vim.lsp.enable "html"
+        vim.lsp.enable "jdtls"
         vim.lsp.enable "jsonls"
         vim.lsp.config("lua_ls", {
             Lua = {
@@ -55,6 +61,10 @@ return {
             },
         })
         vim.lsp.enable "unocss"
+        vim.lsp.config("verible", {
+            cmd = { "verible-verilog-ls", "--indentation_spaces=4" },
+        })
+        vim.lsp.enable "verible"
         vim.lsp.enable "vimls"
         vim.lsp.enable "wgsl_analyzer"
         vim.lsp.config("yamlls", {
