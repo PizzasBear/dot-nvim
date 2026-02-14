@@ -1,6 +1,5 @@
 local keymap = require "keymap"
 
----@module "lazy"
 ---@type LazyPluginSpec
 return {
     "saghen/blink.cmp",
@@ -9,7 +8,6 @@ return {
 
     enabled = vim.version.range(">=0.10"):has(vim.version()),
 
-    ---@module "blink.cmp"
     ---@type blink.cmp.Config
     opts = {
         keymap = keymap.blink,

@@ -1,4 +1,3 @@
----@module "lazy"
 ---@type LazyPluginSpec
 return {
     "stevearc/conform.nvim",
@@ -8,7 +7,6 @@ return {
 
     enabled = vim.version.range(">=0.10"):has(vim.version()),
 
-    ---@module "conform"
     ---@type conform.setupOpts
     opts = {
         default_format_opts = {

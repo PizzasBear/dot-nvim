@@ -1,6 +1,5 @@
 local keymap = require "keymap"
 
----@module "lazy"
 ---@type LazyPluginSpec
 return {
     "nvim-telescope/telescope.nvim",
@@ -11,7 +10,7 @@ return {
     },
     keys = keymap.telescope,
 
-    enabled = vim.version.range(">=0.10"):has(vim.version()),
+    enabled = false and vim.version.range(">=0.10"):has(vim.version()),
 
     opts = {},
 }

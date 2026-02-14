@@ -1,13 +1,9 @@
----@module "lazy"
 ---@type LazyPluginSpec
 return {
-    "mason-org/mason-lspconfig.nvim",
-    dependencies = {
-        { "mason-org/mason.nvim", opts = {} },
-        "nvim-lspconfig",
-    },
+    "mason-org/mason.nvim",
 
-    enabled = vim.version.range(">=0.11"):has(vim.version()),
+    enabled = vim.version.range(">=0.10"):has(vim.version()),
 
+    ---@class MasonSettings
     opts = {},
 }

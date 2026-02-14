@@ -21,7 +21,6 @@ end
 function M.setup(_)
     install_lazy()
     require("lazy").setup {
-        ---@module "lazy"
         ---@type LazyPluginSpec[]
         spec = {
             { import = "plugs" },

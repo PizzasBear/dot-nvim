@@ -25,6 +25,10 @@ function M.setup(_)
     vim.keymap.set("n", "<leader>nh", vim.cmd.noh)
     vim.keymap.set("n", "<leader>w", "<c-w>", { remap = true })
 
+    for _, prefix in ipairs { "<", "<2-", "<3-", "<4-" } do
+        vim.keymap.set({ "", "!" }, prefix .. "MiddleMouse>", "", { remap = true })
+    end
+
     vim.keymap.set("i", "<CR>", function()
         local has_npairs, npairs = pcall(require, "nvim-autopairs")
 
@@ -45,20 +49,31 @@ function M.setup(_)
 end
 
 -- stylua: ignore
----@module 'lazy'
 ---@type LazyKeysSpec[]
 M.telescope = {
     { mode = { "n" }, "<leader><leader>", function() require("telescope.builtin").find_files() end, desc = "Telescope find files" },
     { mode = { "n" }, "<leader>fg",       function() require("telescope.builtin").live_grep() end, desc = "Telescope live grep" },
     { mode = { "n" }, "<leader>/",        function() require("telescope.builtin").live_grep() end, desc = "Telescope live grep" },
+    { mode = { "n" }, "<leader>bb",       function() require("telescope.builtin").buffers() end },
+    { mode = { "n" }, "<leader>,",        function() require("telescope.builtin").buffers() end },
     { mode = { "n" }, "gO",               function() require("telescope.builtin").lsp_document_symbols() end },
     { mode = { "n" }, "grr",              function() require("telescope.builtin").lsp_references() end },
-    { mode = { "n" }, "<C-g>",            function() require("telescope.builtin").buffers() end },
     { mode = { "n" }, "<C-_>",            function() require("telescope.builtin").help_tags() end },
 }
 
 -- stylua: ignore
----@module 'lazy'
+---@type LazyKeysSpec[]
+M.snacks = {
+    { mode = { "n" }, "<leader><leader>", function() require("snacks.picker").files() end, desc = "Picker Find Files" },
+    { mode = { "n" }, "<leader>fg",       function() require("snacks.picker").grep() end, desc = "Picker Live Grep" },
+    { mode = { "n" }, "<leader>/",        function() require("snacks.picker").grep() end, desc = "Picker Live Grep" },
+    { mode = { "n" }, "<leader>bb",       function() require("snacks.picker").buffers() end, desc = "Picker Buffers" },
+    { mode = { "n" }, "<leader>,",        function() require("snacks.picker").buffers() end, desc = "Picker Buffers" },
+    { mode = { "n" }, "grr",              function() require("snacks.picker").lsp_references() end, desc = "Picker LSP References" },
+    { mode = { "n" }, "gO",               function() require("snacks.picker").lsp_symbols() end, desc = "Picker LSP Symbols" },
+}
+
+-- stylua: ignore
 ---@type LazyKeysSpec[]
 M.flash = {
     { mode = { "n", "x", "o" }, "s",     function() require("flash").jump() end, desc = "Flash" },
@@ -69,13 +84,11 @@ M.flash = {
 }
 
 -- stylua: ignore
----@module 'lazy'
 ---@type LazyKeysSpec[]
 M.trouble = {
     { mode = { "n" }, "<leader>oe", function() require("trouble").toggle("diagnostics") end, desc = "Diagnostics (Trouble)" },
 }
 
----@module 'blink.cmp'
 ---@type blink.cmp.KeymapConfig
 M.blink = {
     preset = "enter",
