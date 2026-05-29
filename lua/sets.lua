@@ -77,7 +77,9 @@ function M.setup(_)
 
     -- Enable my autoformat aucmd
     vim.g.auto_format = true
+end
 
+function M.colorscheme()
     vim.cmd.colorscheme "tokyonight-night"
 end
 

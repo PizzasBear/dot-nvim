@@ -27,15 +27,18 @@ end
 function M.setup(_)
     detect_files()
 
-    vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+    vim.api.nvim_create_autocmd({ "FileType" }, {
+        group = vim.api.nvim_create_augroup("StartTreeSitter", {}),
         callback = function(ev)
-            pcall(vim.treesitter.start, ev.buf)
+            local status, _ = pcall(vim.treesitter.start, ev.buf)
+            if status and pcall(require, "nvim-treesitter") then
+                vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end
         end,
     })
 
-    local group = vim.api.nvim_create_augroup("FormatOnSave", {})
     vim.api.nvim_create_autocmd("BufWritePre", {
-        group = group,
+        group = vim.api.nvim_create_augroup("FormatOnSave", {}),
         callback = function(ev)
             if not vim.F.if_nil(vim.b[ev.buf].auto_format, vim.g.auto_format) then
                 return

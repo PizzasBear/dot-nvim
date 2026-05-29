@@ -48,6 +48,26 @@ function M.setup(_)
     end, { expr = true, replace_keycodes = false })
 end
 
+---@class LazyKeysBase
+---@field desc? string
+---@field noremap? boolean
+---@field remap? boolean
+---@field expr? boolean
+---@field nowait? boolean
+---@field ft? string|string[]
+
+---@class LazyKeysSpec: LazyKeysBase
+---@field [1] string lhs
+---@field [2]? string|fun():string?|false rhs
+---@field mode? string|string[]
+
+---@param specs LazyKeysSpec[]
+function M.apply(specs)
+    for _, spec in ipairs(specs) do
+        vim.keymap.set(spec.mode, spec[1], spec[2], { desc = spec.desc })
+    end
+end
+
 -- stylua: ignore
 ---@type LazyKeysSpec[]
 M.telescope = {
